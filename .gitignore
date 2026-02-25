@@ -66,3 +66,6 @@ app/upload/
 # Cursor / IDE
 .cursor/
 
+# Ignorar reporte360 como solicitó el usuario
+reporte360/
+
