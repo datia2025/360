@@ -23,9 +23,9 @@ switch
 
 # runtime and cache directories
 /backend/www/assets
-/backend/runtime
+#/backend/runtime
 
-/frontend/www/assets
+#/frontend/www/assets
 /frontend/runtime
 
 /console/runtime
