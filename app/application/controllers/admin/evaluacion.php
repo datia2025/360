@@ -2225,7 +2225,7 @@ class Evaluacion extends Survey_Common_Action
 									$dat->order ="nombre ASC";
 									//printVar($dat);exit;
 									$participante=AnaParticipante::model()->findAll($dat);	
-									if(isset($participante[0]->keyproyecto)){
+									if(!empty($participante)){
 										$norm=array();
 										foreach($participante as $k=>$datos){
 											$temporal=array();
@@ -2313,7 +2313,7 @@ class Evaluacion extends Survey_Common_Action
 									$dat->condition = "keyid = '".$_POST["key"]."'";
 									//printVar($dat);exit;
 									$relacion=AnaRelacionxproyecto::model()->find($dat);	
-									if(isset($relacion->keyproyecto) and $relacion->idorigen==0){ $participante->delete();
+									if(isset($relacion->keyproyecto) and $relacion->idorigen==0){ $relacion->delete();
  										echo json_encode(array("ok"));exit;
 									}else if($relacion->idorigen>0){$relacion->fechaactualizacion=date("Y-m-d H:i:s");$relacion->estado="N";$relacion->save();echo json_encode(array("ok"));exit;}else{echo json_encode(array("no"));exit;}
 								break;								
@@ -2463,318 +2463,333 @@ class Evaluacion extends Survey_Common_Action
 								break;
 								//*****¨PARTICIPANTES
 								case "participantes":
-									$dat = new CDbCriteria;
-									$dat->condition = "keyproyecto = '".$_POST["key"]."'";
-									$dat->order="nombre ASC";
-									//printVar($dat);exit;
-									$participante=AnaParticipante::model()->findAll($dat);	
-									$tipoedad=AnaTipoedad::model()->findAll();	
-									$tipoantiguedad=AnaTipoantiguedad::model()->findAll();	
-									$tipoestadocivil=AnaTipoestadocivil::model()->findAll();	
-									$tiponivelacademico=AnaTiponivelacademico::model()->findAll();	
-									if(isset($participante[0]->keyproyecto)){
-										$norm=array();
-										foreach($participante as $k=>$datos){
-											$temporal=array();
-											foreach($datos as $campo=>$valor){
-												$temporal[$campo]=$valor;
+									if(isset($_POST["key"]) and $_POST["key"]!="" and $_POST["key"]!="undefined"){
+										//error_log("key: ---->>>".$_POST["key"]);
+										$dat = new CDbCriteria;
+										$dat->condition = "keyproyecto = '".$_POST["key"]."'";
+										$dat->order="nombre ASC";
+										//printVar($dat);exit;
+										$participante=AnaParticipante::model()->findAll($dat);	
+										$tipoedad=AnaTipoedad::model()->findAll();	
+										$tipoantiguedad=AnaTipoantiguedad::model()->findAll();	
+										$tipoestadocivil=AnaTipoestadocivil::model()->findAll();	
+										$tiponivelacademico=AnaTiponivelacademico::model()->findAll();	
+										if(isset($participante[0]->keyproyecto)){
+											$norm=array();
+											foreach($participante as $k=>$datos){
+												$temporal=array();
+												foreach($datos as $campo=>$valor){
+													$temporal[$campo]=$valor;
+												}
+												$norm[$k]=(object)$temporal;
 											}
-											$norm[$k]=(object)$temporal;
-										}
-										$tipoedadr=array();
-										foreach($tipoedad as $pos=>$d){
- 											foreach($d as $k=>$v){
-												$tipoedadr[$pos][$k]=$v;
+											$tipoedadr=array();
+											foreach($tipoedad as $pos=>$d){
+												foreach($d as $k=>$v){
+													$tipoedadr[$pos][$k]=$v;
+												}
 											}
-										}
-										
-										$tipoantiguedadr=array();
-										foreach($tipoantiguedad as $pos=>$d){
- 											foreach($d as $k=>$v){
-												$tipoantiguedadr[$pos][$k]=$v;
+											
+											$tipoantiguedadr=array();
+											foreach($tipoantiguedad as $pos=>$d){
+												foreach($d as $k=>$v){
+													$tipoantiguedadr[$pos][$k]=$v;
+												}
 											}
-										}
-										
-										$tipoestadocivilr=array();
-										foreach($tipoestadocivil as $pos=>$d){
- 											foreach($d as $k=>$v){
-												$tipoestadocivilr[$pos][$k]=$v;
+											
+											$tipoestadocivilr=array();
+											foreach($tipoestadocivil as $pos=>$d){
+												foreach($d as $k=>$v){
+													$tipoestadocivilr[$pos][$k]=$v;
+												}
 											}
-										}
-										
-										$tiponivelacademicor=array();
-										foreach($tiponivelacademico as $pos=>$d){
- 											foreach($d as $k=>$v){
-												$tiponivelacademicor[$pos][$k]=$v;
+											
+											$tiponivelacademicor=array();
+											foreach($tiponivelacademico as $pos=>$d){
+												foreach($d as $k=>$v){
+													$tiponivelacademicor[$pos][$k]=$v;
+												}
 											}
-										}
-										
-										
- 										echo json_encode(array("ok",$norm,array("edad"=>$tipoedadr,"antiguedad"=>$tipoantiguedadr,"ecivil"=>$tipoestadocivilr,"nacademico"=>$tiponivelacademicor)));exit;
+											
+											
+											echo json_encode(array("ok",$norm,array("edad"=>$tipoedadr,"antiguedad"=>$tipoantiguedadr,"ecivil"=>$tipoestadocivilr,"nacademico"=>$tiponivelacademicor)));exit;
+										}else{echo json_encode(array("no"));exit;}
 									}else{echo json_encode(array("no"));exit;}
 								break;
 								
 								case "participante":
-									$dat = new CDbCriteria;
-									$dat->condition = "keyid = '".$_POST["key"]."'";
-									$dat->order="nombre ASC";
-									//printVar($dat);exit;
-									$participante=AnaParticipante::model()->findAll($dat);	
-									if(isset($participante[0]->keyproyecto)){
-										$norm=array();
-										foreach($participante as $k=>$datos){
-											$temporal=array();
-											foreach($datos as $campo=>$valor){
-												$temporal[$campo]=$valor;
+									if(isset($_POST["key"]) and $_POST["key"]!="" and $_POST["key"]!="undefined"){
+										$dat = new CDbCriteria;
+										$dat->condition = "keyid = '".$_POST["key"]."'";
+										$dat->order="nombre ASC";
+										//printVar($dat);exit;
+										$participante=AnaParticipante::model()->findAll($dat);	
+										if(isset($participante[0]->keyproyecto)){
+											$norm=array();
+											foreach($participante as $k=>$datos){
+												$temporal=array();
+												foreach($datos as $campo=>$valor){
+													$temporal[$campo]=$valor;
+												}
+												$norm=(object)$temporal;
 											}
-											$norm=(object)$temporal;
-										}
-										echo json_encode(array("ok",$norm));exit;
+											echo json_encode(array("ok",$norm));exit;
+										}else{echo json_encode(array("no"));exit;}
 									}else{echo json_encode(array("no"));exit;}
 								break;
 								
 								case "eliminarparticipante":
-									$dat = new CDbCriteria;
-									$dat->condition = "keyid = '".$_POST["key"]."'";
-									//printVar($dat);exit;
-									$participante=AnaParticipante::model()->find($dat);
-									
-									if(isset($participante->keyproyecto)){ 
-									$detalles=array();
-									foreach($participante as $k=>$d){
-										$detalles[$k]=$d;
-									}
-									$detalles="Datos participante: ".json_encode($detalles);
-									
-									$participante->delete();
+									if(isset($_POST["key"]) and $_POST["key"]!="" and $_POST["key"]!="undefined"){
 										$dat = new CDbCriteria;
-										$dat->condition = "keyidparticipante = '".$_POST["key"]."'or keyidparticipanteevaluador = '".$_POST["key"]."' ";
+										$dat->condition = "keyid = '".$_POST["key"]."'";
 										//printVar($dat);exit;
-										$participante=AnaEncuestaParticipanterelaciones::model()->findAll($dat);
-										$tempo=array();										
-										foreach($participante as $data){
-											$dat = new CDbCriteria;
-											$dat->condition = "keyid = '".$data->keyid."' ";
-											//printVar($dat);exit;
-											$atom=AnaEncuestaParticipanterelaciones::model()->find($dat);
-											$datahistory=array();
-											foreach($atom as $k=>$d){
-												$datahistory[$k]=$d;
-											}
-											array_push($tempo,$datahistory);
-											$atom->delete();
-										}
-										$detalles.=" Datos Relaciones: ".json_encode($tempo);
+										$participante=AnaParticipante::model()->find($dat);
 										
-										$dat = new CDbCriteria;
-										$dat->condition = "keyidevaluado = '".$_POST["key"]."'or keyidevaluador = '".$_POST["key"]."' ";
-										//printVar($dat);exit;
-										$participante=AnaEncuestaRespuestas::model()->findAll($dat);
-										$tempo=array();											
-										foreach($participante as $data){
-											$dat = new CDbCriteria;
-											$dat->condition = "keyid = '".$data->keyid."' ";
-											//printVar($dat);exit;
-											$atom=AnaEncuestaRespuestas::model()->find($dat);	
-											$datahistory=array();
-											foreach($atom as $k=>$d){
-												$datahistory[$k]=$d;
-											}
-											array_push($tempo,$datahistory);											
-											$atom->delete();
+										if(isset($participante->keyproyecto)){ 
+										$detalles=array();
+										foreach($participante as $k=>$d){
+											$detalles[$k]=$d;
 										}
-										$detalles.=" Datos Respuestas: ".json_encode($tempo);
-										$dat = new CDbCriteria;
-										$dat->condition =  "keyidevaluado = '".$_POST["key"]."'or keyidevaluador = '".$_POST["key"]."' ";
-										//printVar($dat);exit;
-										$participante=AnaEncuestaRespuestasAbiertas::model()->findAll($dat);
-										$tempo=array();											
-										foreach($participante as $data){
+										$detalles="Datos participante: ".json_encode($detalles);
+										
+										$participante->delete();
 											$dat = new CDbCriteria;
-											$dat->condition = "keyid = '".$data->keyid."' ";
+											$dat->condition = "keyidparticipante = '".$_POST["key"]."'or keyidparticipanteevaluador = '".$_POST["key"]."' ";
 											//printVar($dat);exit;
-											$atom=AnaEncuestaRespuestasAbiertas::model()->find($dat);	
-											$datahistory=array();
-											foreach($atom as $k=>$d){
-												$datahistory[$k]=$d;
+											$participante=AnaEncuestaParticipanterelaciones::model()->findAll($dat);
+											$tempo=array();										
+											foreach($participante as $data){
+												$dat = new CDbCriteria;
+												$dat->condition = "keyid = '".$data->keyid."' ";
+												//printVar($dat);exit;
+												$atom=AnaEncuestaParticipanterelaciones::model()->find($dat);
+												$datahistory=array();
+												foreach($atom as $k=>$d){
+													$datahistory[$k]=$d;
+												}
+												array_push($tempo,$datahistory);
+												$atom->delete();
 											}
-											array_push($tempo,$datahistory);	
-											$atom->delete();
-										}
-										$detalles.=" Datos Respuestas Abiertas: ".json_encode($tempo);
-										$this->addEventos("Eliminar usuario ",$detalles);
-										
-										
-										echo json_encode(array("ok"));exit;
+											$detalles.=" Datos Relaciones: ".json_encode($tempo);
+											
+											$dat = new CDbCriteria;
+											$dat->condition = "keyidevaluado = '".$_POST["key"]."'or keyidevaluador = '".$_POST["key"]."' ";
+											//printVar($dat);exit;
+											$participante=AnaEncuestaRespuestas::model()->findAll($dat);
+											$tempo=array();											
+											foreach($participante as $data){
+												$dat = new CDbCriteria;
+												$dat->condition = "keyid = '".$data->keyid."' ";
+												//printVar($dat);exit;
+												$atom=AnaEncuestaRespuestas::model()->find($dat);	
+												$datahistory=array();
+												foreach($atom as $k=>$d){
+													$datahistory[$k]=$d;
+												}
+												array_push($tempo,$datahistory);											
+												$atom->delete();
+											}
+											$detalles.=" Datos Respuestas: ".json_encode($tempo);
+											$dat = new CDbCriteria;
+											$dat->condition =  "keyidevaluado = '".$_POST["key"]."'or keyidevaluador = '".$_POST["key"]."' ";
+											//printVar($dat);exit;
+											$participante=AnaEncuestaRespuestasAbiertas::model()->findAll($dat);
+											$tempo=array();											
+											foreach($participante as $data){
+												$dat = new CDbCriteria;
+												$dat->condition = "keyid = '".$data->keyid."' ";
+												//printVar($dat);exit;
+												$atom=AnaEncuestaRespuestasAbiertas::model()->find($dat);	
+												$datahistory=array();
+												foreach($atom as $k=>$d){
+													$datahistory[$k]=$d;
+												}
+												array_push($tempo,$datahistory);	
+												$atom->delete();
+											}
+											$detalles.=" Datos Respuestas Abiertas: ".json_encode($tempo);
+											$this->addEventos("Eliminar usuario ",$detalles);
+											
+											
+											echo json_encode(array("ok"));exit;
+										}else{echo json_encode(array("no"));exit;}
 									}else{echo json_encode(array("no"));exit;}
 								break;
 								
 								/*COMPETENCIAS POR EVALUADO*/
 								case "competenciasxevaluado":
-									$dat = new CDbCriteria;
-									$dat->condition = "keyproyecto = '".$_POST["key"]."' and retroalimentacion='S'";
-									$dat->order="nombre ASC";
-									//printVar($dat);exit;
-									$participante=AnaParticipante::model()->findAll($dat);	
-									if(isset($participante[0]->keyproyecto)){
-										$norm=array();
-										foreach($participante as $k=>$datos){
-											$temporal=array();
-											foreach($datos as $campo=>$valor){
-												$temporal[$campo]=$valor;
+									if(isset($_POST["key"]) and $_POST["key"]!="" and $_POST["key"]!="undefined"){
+										$dat = new CDbCriteria;
+										$dat->condition = "keyproyecto = '".$_POST["key"]."' and retroalimentacion='S'";
+										$dat->order="nombre ASC";
+										//printVar($dat);exit;
+										$participante=AnaParticipante::model()->findAll($dat);	
+										if(isset($participante[0]->keyproyecto)){
+											$norm=array();
+											foreach($participante as $k=>$datos){
+												$temporal=array();
+												foreach($datos as $campo=>$valor){
+													$temporal[$campo]=$valor;
+												}
+												$norm[$k]=(object)$temporal;
 											}
-											$norm[$k]=(object)$temporal;
-										}
-										echo json_encode(array("ok",$norm));exit;
-									}else{echo json_encode(array("no"));exit;}								
+											echo json_encode(array("ok",$norm));exit;
+										}else{echo json_encode(array("no"));exit;}	
+									}else{echo json_encode(array("no"));exit;}
  								break;
 								case "competenciasdisponibles":
-									$dat = new CDbCriteria;
-									$dat->condition = "keyproyecto = '".$_POST["keyidproyecto"]."' and keyid='".$_POST["keyid"]."'";
-									$dat->order="nombre ASC";
-									//printVar($dat);exit;
-									$participante=AnaParticipante::model()->findAll($dat);	
-									if(isset($participante[0]->keyproyecto)){
-										$norm=array();
-										foreach($participante as $k=>$datos){
-											$temporal=array();
-											foreach($datos as $campo=>$valor){
-												$temporal[$campo]=$valor;
-												if($campo=="jsoncompetencias"){ 
-													$competencias=array();
- 													if($valor=="{}"){
-														$dat = new CDbCriteria;
-														$dat->condition = "keyidproyecto = '".$_POST["keyidproyecto"]."'";
-														$dat->order="idorden ASC";
-														$competenciast=AnaEncuestaCompetenciaProyecto::model()->findAll($dat);	
- 														foreach($competenciast as $datos){
-															$competencias[$datos->keyid]=$datos->nombre_esp;
+									if(isset($_POST["keyidproyecto"]) and $_POST["keyidproyecto"]!="" and isset($_POST["keyid"]) and $_POST["keyid"]!=""){
+										$dat = new CDbCriteria;
+										$dat->condition = "keyproyecto = '".$_POST["keyidproyecto"]."' and keyid='".$_POST["keyid"]."'";
+										$dat->order="nombre ASC";
+										//printVar($dat);exit;
+										$participante=AnaParticipante::model()->findAll($dat);	
+										if(isset($participante[0]->keyproyecto)){
+											$norm=array();
+											foreach($participante as $k=>$datos){
+												$temporal=array();
+												foreach($datos as $campo=>$valor){
+													$temporal[$campo]=$valor;
+													if($campo=="jsoncompetencias"){ 
+														$competencias=array();
+														if($valor=="{}"){
+															$dat = new CDbCriteria;
+															$dat->condition = "keyidproyecto = '".$_POST["keyidproyecto"]."'";
+															$dat->order="idorden ASC";
+															$competenciast=AnaEncuestaCompetenciaProyecto::model()->findAll($dat);	
+															foreach($competenciast as $datos){
+																$competencias[$datos->keyid]=$datos->nombre_esp;
+															}
+															
+															//printVar($competencias);exit;
+														}else{
+															$jsondecode=json_decode($valor);
+															$kyids=array();
+															foreach($jsondecode as $kc=>$n){
+																array_push($kyids,$kc);
+															}
+															
+															$dat = new CDbCriteria;
+															$dat->condition = "keyidproyecto = '".$_POST["keyidproyecto"]."' and keyid in ('".join("','",$kyids)."')";
+															$dat->order="idorden ASC";
+															$competenciast=AnaEncuestaCompetenciaProyecto::model()->findAll($dat);	
+															foreach($competenciast as $datos){
+																$competencias[$datos->keyid]=$datos->nombre_esp;
+															}
 														}
-														 
-														//printVar($competencias);exit;
-													}else{
-														$jsondecode=json_decode($valor);
-														$kyids=array();
-														foreach($jsondecode as $kc=>$n){
-															array_push($kyids,$kc);
-														}
-														
-														$dat = new CDbCriteria;
-														$dat->condition = "keyidproyecto = '".$_POST["keyidproyecto"]."' and keyid in ('".join("','",$kyids)."')";
-														$dat->order="idorden ASC";
-														$competenciast=AnaEncuestaCompetenciaProyecto::model()->findAll($dat);	
- 														foreach($competenciast as $datos){
-															$competencias[$datos->keyid]=$datos->nombre_esp;
-														}
- 													}
-													$competenciasexclude=array();
-													if(count($competencias)>0){
-														$jsondecode=$competencias;
-														$kyids=array();
-														foreach($jsondecode as $kc=>$n){
-															array_push($kyids,$kc);
-														}
-														
-														$dat = new CDbCriteria;
-														$dat->condition = "keyidproyecto = '".$_POST["keyidproyecto"]."' and keyid not in ('".join("','",$kyids)."')";
-														$dat->order="idorden ASC";
-														$competenciast=AnaEncuestaCompetenciaProyecto::model()->findAll($dat);	
- 														foreach($competenciast as $datos){
-															$competenciasexclude[$datos->keyid]=$datos->nombre_esp;
-														}
+														$competenciasexclude=array();
+														if(count($competencias)>0){
+															$jsondecode=$competencias;
+															$kyids=array();
+															foreach($jsondecode as $kc=>$n){
+																array_push($kyids,$kc);
+															}
+															
+															$dat = new CDbCriteria;
+															$dat->condition = "keyidproyecto = '".$_POST["keyidproyecto"]."' and keyid not in ('".join("','",$kyids)."')";
+															$dat->order="idorden ASC";
+															$competenciast=AnaEncuestaCompetenciaProyecto::model()->findAll($dat);	
+															foreach($competenciast as $datos){
+																$competenciasexclude[$datos->keyid]=$datos->nombre_esp;
+															}
 
+														}
+														
+														$temporal[$campo]=((object)$competencias);
+														$temporal["competenciasexclude"]=((object)$competenciasexclude);
 													}
-													
-													$temporal[$campo]=((object)$competencias);
-													$temporal["competenciasexclude"]=((object)$competenciasexclude);
- 												}
+												}
+												$norm[$k]=(object)$temporal;
 											}
-											$norm[$k]=(object)$temporal;
-										}
-										echo json_encode(array("ok",$norm));exit;
-									}else{echo json_encode(array("no"));exit;}								
+											echo json_encode(array("ok",$norm));exit;
+										}else{echo json_encode(array("no"));exit;}								
+									}else{echo json_encode(array("no"));exit;}
 								break;
 								
 								case "actualizarcompetenciasparticipante":
 									//printVar($_POST);
 
-									$dat = new CDbCriteria;
-									$dat->condition = "keyid = '".$_POST["keyid"]."' and retroalimentacion='S'";
-									//printVar($dat);exit;
-									$participante=AnaParticipante::model()->find($dat);	
-									if(isset($participante->keyproyecto)){
-										$participante->jsoncompetencias=json_encode((object)$_POST["competencias"]);
-										$participante->save();
-										echo json_encode(array("ok"));exit;
-									}else{
-										echo json_encode(array("no"));exit;
-									}							
+									if(isset($_POST["keyid"]) and $_POST["keyid"]!="" and isset($_POST["competencias"]) and $_POST["competencias"]!=""){
+										$dat = new CDbCriteria;
+										$dat->condition = "keyid = '".$_POST["keyid"]."' and retroalimentacion='S'";
+										//printVar($dat);exit;
+										$participante=AnaParticipante::model()->find($dat);	
+										if(isset($participante->keyproyecto)){
+											$participante->jsoncompetencias=json_encode((object)$_POST["competencias"]);
+											$participante->save();
+											echo json_encode(array("ok"));exit;
+										}else{
+											echo json_encode(array("no"));exit;
+										}	
+									}else{echo json_encode(array("no"));exit;}
  								break;
 								
 							}
 						break;
 						case "editarparticipante":
-							$dat = new CDbCriteria;
-							$dat->condition = "keyid = '".$_POST["keyid"]."'    and keyproyecto='".$_POST["keyproyecto"]."'  ";
-							// printVar($_POST);exit;
-							$p=AnaParticipante::model()->find($dat);
-							if(isset($p->keyid) and $this->validarPago($_POST["keyproyecto"],'PDF AVANZADO')==false){
+							if(isset($_POST["keyid"]) and $_POST["keyid"]!="" and isset($_POST["keyproyecto"]) and $_POST["keyproyecto"]!="" and isset($_POST["email"]) and $_POST["email"]!=""){
 								$dat = new CDbCriteria;
-								$dat->condition = "keyid<> '".$_POST["keyid"]."'    and email='".$_POST["email"]."' and keyproyecto='".$_POST["keyproyecto"]."' ";
+								$dat->condition = "keyid = '".$_POST["keyid"]."'    and keyproyecto='".$_POST["keyproyecto"]."'  ";
 								// printVar($_POST);exit;
-								$validaremail=AnaParticipante::model()->find($dat);
-								if(!isset($validaremail->keyid)){	
- 									$p->apellido=$_POST["apellido"];
-									$p->nombre=$_POST["nombre"];
-									$p->email=$_POST["email"];
-									if($_POST["clave"]!=""){
-										$p->clave=base64_encode($this->encrypt( $_POST["clave"],"lindosnenes"));
+								$p=AnaParticipante::model()->find($dat);
+								if(isset($p->keyid) and $this->validarPago($_POST["keyproyecto"],'PDF AVANZADO')==false){
+									$dat = new CDbCriteria;
+									$dat->condition = "keyid<> '".$_POST["keyid"]."'    and email='".$_POST["email"]."' and keyproyecto='".$_POST["keyproyecto"]."' ";
+									// printVar($_POST);exit;
+									$validaremail=AnaParticipante::model()->find($dat);
+									if(!isset($validaremail->keyid)){	
+										$p->apellido=$_POST["apellido"];
+										$p->nombre=$_POST["nombre"];
+										$p->email=$_POST["email"];
+										if($_POST["clave"]!=""){
+											$p->clave=base64_encode($this->encrypt( $_POST["clave"],"lindosnenes"));
+										}else{
+											$clave=$this->generarKey(8);
+											$p->clave=base64_encode($this->encrypt($clave,"lindosnenes"));  
+										}
+										
+										if((int)$_POST["edad"]>0){
+											$p->edad=(int)$_POST["edad"];
+										}
+										
+										if((int)$_POST["genero"]>0){
+											$p->genero=(int)$_POST["genero"];
+										}
+										
+										if((int)$_POST["antiguedad"]>0){
+											$p->antiguedad=(int)$_POST["antiguedad"];
+										}
+										
+										
+										if($_POST["ciudad"]!=""){
+											$p->ciudad=$_POST["ciudad"];
+										}
+										
+										if($_POST["pais"]!=""){
+											$p->pais=$_POST["pais"];
+										}
+										
+										if((int)$_POST["nacademico"]>0){
+											$p->nivelacademico=(int)$_POST["nacademico"];
+										}
+										
+										if((int)$_POST["ecivil"]>0){
+											$p->estadocivil=(int)$_POST["ecivil"];
+										}
+										
+										
+										//printVar($p);exit;
+										$p->retroalimentacion=$_POST["retroalimentacion"];
+										$p->fechaactualizacion=date("Y-m-d H:i:s");
+										$p->save(); 
+										echo json_encode(array("ok"));exit;
 									}else{
-										$clave=$this->generarKey(8);
-										$p->clave=base64_encode($this->encrypt($clave,"lindosnenes"));  
+										echo json_encode(array("emailexiste"));exit;
 									}
-									
-									if((int)$_POST["edad"]>0){
-										$p->edad=(int)$_POST["edad"];
-									}
-									
-									if((int)$_POST["genero"]>0){
-										$p->genero=(int)$_POST["genero"];
-									}
-									
-									if((int)$_POST["antiguedad"]>0){
-										$p->antiguedad=(int)$_POST["antiguedad"];
-									}
-									
-									
-									if($_POST["ciudad"]!=""){
-										$p->ciudad=$_POST["ciudad"];
-									}
-									
-									if($_POST["pais"]!=""){
-										$p->pais=$_POST["pais"];
-									}
-									
-									if((int)$_POST["nacademico"]>0){
-										$p->nivelacademico=(int)$_POST["nacademico"];
-									}
-									
-									if((int)$_POST["ecivil"]>0){
-										$p->estadocivil=(int)$_POST["ecivil"];
-									}
-									
-									
-									//printVar($p);exit;
-									$p->retroalimentacion=$_POST["retroalimentacion"];
-									$p->fechaactualizacion=date("Y-m-d H:i:s");
-									$p->save(); 
-									echo json_encode(array("ok"));exit;
 								}else{
-									echo json_encode(array("emailexiste"));exit;
+									echo json_encode(array("no"));exit;
 								}
-							}else{
-								echo json_encode(array("no"));exit;
-							}
+							}else{echo json_encode(array("no"));exit;}
 						break;
 						case "agregarparticipante":
 							if($this->validarPago($_POST["keyproyecto"],'PDF AVANZADO')==false){
